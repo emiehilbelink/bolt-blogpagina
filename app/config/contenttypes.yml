@@ -1,0 +1,171 @@
+# This file defines the contenttypes on the website. See the documentation for
+# details: https://docs.bolt.cm/contenttypes/intro
+
+# Pages can be used for the more 'static' pages on your site. Things like
+# 'about us', 'contact' or a 'disclaimer'. This content-type has a 'templateselect'
+# field, which allows you to override the record_template setting for an
+# individual page.
+# The taxonomy for this ContentType is defined as 'groups', which is a so-called
+# "grouping taxonomy". This way you can easily group sets of pages that logically
+# belong together. If your site has a 'services' section, in which you'd like to
+# list the different types of services a company provides, you can group these
+# together.
+
+pages:
+    name: Pages
+    singular_name: Page
+    fields:
+        title:
+            type: text
+            class: large
+            group: content
+        slug:
+            type: slug
+            uses: title
+        body:
+            type: html
+            height: 300px
+        teaser:
+            type: html
+            height: 150px
+        image:
+            type: image
+            group: header
+        header_img:
+            type: image
+            extensions: [ gif, jpg, png ]
+        header_title:
+            type: text
+        button1_text:
+            type: text
+        button1_link:
+            type: text
+        button2_text:
+            type: text
+        button2_link:
+            type: text
+        template:
+            type: templateselect
+            filter: '*.twig'
+    taxonomy: [ groups ]
+    recordsperpage: 100
+
+
+# blogs can be used for things like 'news' or 'blogpostings'. They have a 'teaser',
+# which can be used for a short blurb on listing-pages, allowing visitors to
+# click-through to the rest of the entry. It also has fields for an image and an
+# optional video.
+# A relation is defined to the pages ContentType. This way you can refer to a page
+# from your news-item.
+# This ContentType defines 'categories' and 'tags' as taxonomies, allowing the
+# editor to use both to categorize a specific entry.
+# The 'sort' is set to '-datepublish', which means that newer blogs will be
+# shown above older blogs.
+
+blogs:
+    name: Blogs
+    singular_name: blog
+    fields:
+        title:
+            type: text
+            class: large
+            group: content
+        slug:
+            type: slug
+            uses: title
+        body:
+            type: html
+            height: 300px
+        image:
+            type: image
+    taxonomy: [ categories, tags ]
+    record_template: entry-blog.twig
+    listing_template: listing-blog.twig
+    listing_records: 10
+    default_status: published
+    sort: -datepublish
+    recordsperpage: 10
+
+
+# The 'Showcases' is not particularly useful in most cases, but it does a good
+# job of showcasing most of the available fieldtypes. Feel free to delete it, or
+# copy some fields to your own ContentTypes.
+# Since no templates are defined for this ContentType, the default record_template,
+# listing_template, and related settings are used from config.yml
+
+
+# Possible field types:
+#
+# text - varchar(256) - input type text.
+# integer - integer - Input field for integer numbers.
+# float - double - Input field for floating numbers, stored as 'Double'.
+# geolocation - text (65kb) - Input field for geolocation. Enter an address, and the location is geocoded to latitude/longitude coordinates
+# imagelist - text (65kb) - Input type for imagelists. Add multiple images with a description. Useful for image sliders, galleries, etcetera.
+# image - varchar(256) - image select/upload widget, stored as filename.
+# file - varchar(256) - file select/upload widget, stored as filename.
+# filelist - text (65kb) - Input type for a list of files. Including a description.
+# video - varchar(256) - Video embed widget, stored as filename.
+# html - text (65kb) - wysiwyg element.
+# textarea - varchar(32768) - Simple, plain < textarea > field.
+# markdown - varchar(32768) - Simple, plain < textarea > field, which is parsed as Markdown text.
+# datetime - datetime - date and time selector widget.
+# date - datetime - date selector widget.
+# select - varchar(256) - select with predefined values
+# templateselect - varchar(256) - select with template filenames
+# checkbox - integer - checkbox-field which is 1 (checked) or 0 (unchecked)
+
+# Using YAML repeated nodes
+#
+# YAML allows the defining of "repeated nodes". These allow you to define a 'node'
+# with a 'key: &name' and referenced later with '<<: *name'
+#
+# Bolt allows you to define this with the special entry of '__nodes:' that itself
+# won't create a ContentType, but will allow you to use it in actual ContentTypes
+# to prevent repeating yourself.
+#
+# To achieve this, first create a key '__nodes:'
+#__nodes:
+#    field_defaults: &field_defaults
+#        title:
+#            type: text
+#            class: large
+#            group: main
+#        slug:
+#            type: slug
+#            uses: title
+#    template_defaults: &template_defaults
+#        template:
+#            type: templateselect
+#            filter: '*.twig'
+#            group: meta
+#
+# Then, as an example, you could create a ContentType with default fields, with
+# an additional 'image' field.
+#
+#contenttype_abc:
+#    name: ContentType Abc
+#    fields:
+#        <<: *field_defaults
+#        image:
+#            type: image
+#            attrib: title
+#            extensions: [ gif, jpg, png ]
+#        <<: *template_defaults
+#    taxonomy: [ chapters ]
+#    recordsperpage: 10
+#
+# Alternatively, or additionally, you then can then create a ContentType with
+# default fields, and a 'select' field, and a different 'templateselect' option.
+#
+#contenttype_xyz:
+#    name: ContentType Xyz
+#    fields:
+#        <<: *field_defaults
+#        selectfield:
+#            type: select
+#            values: [ none, foo, bar ]
+#        template:
+#            type: templateselect
+#            filter: '*_xyz.twig'
+#    taxonomy: [ tags ]
+#    recordsperpage: 20
